@@ -10,7 +10,7 @@ local l_2 = ffi.new("float[1]")
 local theta_1_deg = ffi.new("float[1]")
 local theta_2_deg = ffi.new("float[1]")
 local w_1_deg = ffi.new("float[1]")
-local w_2_deg = ffi.new("float[2]")
+local w_2_deg = ffi.new("float[1]")
 local playing = false
 local bit = require "bit"
 function love.load()
