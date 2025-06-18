@@ -16,6 +16,8 @@ local playing = false
 local bit = require "bit"
 local state_vector = {0,0,0,0}
 local t = 0
+local time_step = ffi.new("float[1]")
+local realtime = ffi.new("bool[1]")
 function love.load()
     imgui.love.Init()
 
@@ -72,8 +74,13 @@ function love.update(dt)
     if playing ~= true then
         state_vector = {deg_to_rad(theta_1_deg[0]),deg_to_rad(w_1_deg[0]),deg_to_rad(theta_2_deg[0]),deg_to_rad(w_2_deg[0])}
     else 
+        if realtime[0] == true then
         t = t + dt
         state_vector = timestep(dt)
+        else 
+            t = t + (time_step[0] / 10^3)
+            state_vector = timestep(time_step[0] / 10^3)
+        end 
     end
     imgui.love.Update(dt)
     imgui.NewFrame()
@@ -140,6 +147,8 @@ function love.draw()
         imgui.SliderFloat("Initial angle of object 2 (degrees)",theta_2_deg,0.0,360.0)
         imgui.SliderFloat("Initial angular velocity of object 1 (degrees per second)",w_1_deg,0.0,360.0)
         imgui.SliderFloat("Initial angular velocity of object 2 (degrees per second)",w_2_deg,0.0,360.0)
+        imgui.SliderFloat("Time step (ms)",time_step,0.001,1)
+        imgui.Checkbox("Time step in real time (ignores set time step and is more inaccurate to real physics)",realtime)
     end
     if playing == true then
         imgui.Text("Time: "..tostring(t))
